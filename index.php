@@ -1,13 +1,11 @@
+<?php 
+require('db.php');  //ingreso y conexion a la BBDD
+include("auth.php"); //incluir auth.php en todas las paginas seguras ?>
 <!DOCTYPE html>
-<?php
-        $host="localhost";
-        $user="root";
-        $password="";
-        $dbname="mydb";
-        $link = mysqli_connect($host,$user,$password,$dbname);
-?>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="css/style.css" />
 <style>
 header {
     background-color:black;
@@ -19,7 +17,7 @@ nav {
     line-height:30px;
     background-color:#eeeeee;
     height:300px;
-    width:150px;
+    width:230px;
     float:left;
     padding:5px;	      
 }
@@ -43,73 +41,23 @@ footer {
 </header>
 
 <nav>
-    <?php
-         if(!$link){
-            echo 'Error en la consulta';
-        }
-        else
-            {
-       
-        $sql="select Nombre from ramos"; //selecciona el nombre de los ramos
-        
-        $result=mysqli_query($link, $sql);
-        if(!$result){echo"Error";}
-        echo'Ramos: <select name="ramo" >';
-        while($row= mysqli_fetch_array($result,MYSQLI_ASSOC))
-                { 
-        foreach ($row as $key=>$dato)
-            // se muestra todos los nombres de los ramos para poder seleccionarlos 
-            {if($key=='name')
-            {
-                echo '<option value= "'.$dato.'"> '.$dato. '</option>';
-            }
-            }
-                 }
-            echo'</select> <br>';
-        }
-        ?>
-        <br>
-<form method="POST" action="nuevocurso.php">
-Agregar Ramo: <input type="text" name="nombrecurso"><br>
-<input type="submit" value="Guardar"><br>
-Eliminar Ramo:
-<?php   
-         if(!$link){
-            echo 'Error en la consulta';
-        }
-        else
-            {
-       
-        $sql="select Nombre from ramos WHERE usuario_ID=ID.usuario"; //selecciona name de la tabla courses
-        
-        $result=mysqli_query($link, $sql);
-        if(!$result){echo"Error";}
-        echo'Ramo: <select name="ramo" >';
-        while($row= mysqli_fetch_array($result,MYSQLI_ASSOC))
-                { 
-        foreach ($row as $key=>$dato)
-            
-            {if($key=='name')
-            {
-                echo '<option value= "'.$dato.'"> '.$dato. '</option>';
-            }
-            }
-        
-                 }
-            echo'</select> <br>';
-        }
-        ?>
-</form>
+    <br>
+    Ingresar Nuevo Ramo<br>
+    <form method="POST" action="agregarramo.php">
+    Nombre Ramo: <input type="text" name="nombreramo"><br>
+    <input type="submit" value="Guardar">
+    </form>
 
 </nav>
 
 <section>
-<h1>Ramo1</h1>
-<p>Informacion</p>
+<p>Bienvenido <?php echo $_SESSION['username']; ?>!</p>
+<p><a href="dashboard.php">Dashboard</a></p>
+<a href="logout.php">Logout</a>
 </section>
  
 <aside>
-    <p>Calendario</p>  
+
 </aside>
 
 
