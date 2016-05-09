@@ -22,7 +22,7 @@ nav {
     padding:5px;	      
 }
 section {
-    width:350px;
+    width:450px;
     float:left;
     padding:10px;	 	 
 }
@@ -41,7 +41,39 @@ footer {
 </header>
 
 <nav>
-    <br>
+    Ramo<br>
+    <form method="POST" action="dashboard.php">
+        
+        <?php
+        
+         if(!$link){
+            echo 'Error en la consulta';
+        }
+        else
+            {
+        $sql="SELECT nombre_ramo FROM ramo"; 
+        //selecciona nombre de la tabla courses
+        
+        $result=mysqli_query($link, $sql);
+        if(!$result){echo"Error";}
+        echo'Nombre Ramo: <select name="ramo" >';
+        while($row= mysqli_fetch_array($result,MYSQLI_ASSOC))
+                { 
+        foreach ($row as $key=>$dato)
+            
+            {if($key=='name')
+            {
+                echo '<option value= "'.$dato.'"> '.$dato. '</option>';
+            }
+            }
+        
+                 }
+            echo'</select> <br>';
+        }
+        ?>
+        <input type="submit" value="Seleccionar">
+         </form>
+    
     Ingresar Nuevo Ramo<br>
     <form method="POST" action="agregarramo.php">
     Nombre Ramo: <input type="text" name="nombreramo"><br>
@@ -53,11 +85,11 @@ footer {
 <section>
 <p>Bienvenido <?php echo $_SESSION['username']; ?>!</p>
 <p><a href="dashboard.php">Dashboard</a></p>
-<a href="logout.php">Logout</a>
 </section>
  
 <aside>
-
+    <br>
+    <a href="logout.php">Logout</a>
 </aside>
 
 

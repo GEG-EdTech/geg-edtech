@@ -20,7 +20,7 @@ nav {
     padding:5px;	      
 }
 section {
-    width:350px;
+    width:450px;
     float:left;
     padding:10px;	 	 
 }
@@ -49,7 +49,7 @@ footer {
     // se requiere para incluir informacion en la BBDD
     if (isset($_POST['username'])){
         $username = $_POST['username'];
-		$email = $_POST['email'];
+	$email = $_POST['email'];
         $password = $_POST['password'];
 		$username = stripslashes($username);
 		$username = mysql_real_escape_string($username);

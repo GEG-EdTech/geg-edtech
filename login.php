@@ -19,7 +19,7 @@ nav {
     padding:5px;	      
 }
 section {
-    width:350px;
+    width:450px;
     float:left;
     padding:10px;	 	 
 }
