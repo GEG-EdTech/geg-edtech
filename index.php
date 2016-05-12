@@ -41,7 +41,7 @@ footer {
 </header>
 
 <nav>
-    Ramo<br>
+    <br>
     <form method="POST" action="dashboard.php">
         
         <?php
@@ -51,13 +51,25 @@ footer {
         }
         else
             {
-        $sql="SELECT nombre_ramo FROM ramo"; 
-        //selecciona nombre de la tabla courses
+        //busca el ID del usuario de la session
+        $username = $_SESSION['username'];
+                $username = stripslashes($username);
+                $username = mysql_real_escape_string($username);
+        $query_id="SELECT id FROM users WHERE username='$username'";
+        $result_id = mysql_query($query_id);
+
+        while ($fila = mysql_fetch_assoc($result_id)) {
+            $id = $fila['id'];
+        }
+        $sql="SELECT nombre_ramo FROM ramo WHERE users_id='$id'";  
+        //selecciona los nombres de los ramos de la tabla ramo
         
         $result=mysqli_query($link, $sql);
-        if(!$result){echo"Error";}
+        if(!$result){
+            echo"Error";
+        }
         echo'Nombre Ramo: <select name="ramo" >';
-        while($row= mysqli_fetch_array($result,MYSQLI_ASSOC))
+        while($row= mysqli_fetch_array($result))
                 { 
         foreach ($row as $key=>$dato)
             
@@ -66,7 +78,6 @@ footer {
                 echo '<option value= "'.$dato.'"> '.$dato. '</option>';
             }
             }
-        
                  }
             echo'</select> <br>';
         }
@@ -83,13 +94,13 @@ footer {
 </nav>
 
 <section>
-<p>Bienvenido <?php echo $_SESSION['username']; ?>!</p>
-<p><a href="dashboard.php">Dashboard</a></p>
+    <p>Bienvenido <?php echo $_SESSION['username']; ?>!</p>
 </section>
  
 <aside>
     <br>
-    <a href="logout.php">Logout</a>
+    <a href="logout.php">Logout</a><br>
+    <?php //include 'pruebas2.html' ?>
 </aside>
 
 

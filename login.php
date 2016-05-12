@@ -68,13 +68,13 @@ footer {
     }else{
 ?>
 <div class="form">
-<h1>Ingresar</h1>
-<form action="" method="post" name="login">
-<input type="text" name="username" placeholder="Nombre" required />
-<input type="password" name="password" placeholder="Clave" required />
-<input name="submit" type="submit" value="Ingresar" />
-</form>
-<p>¿No estas registrado aún? <a href='registration.php'>Registrate aqui!</a></p>
+    <h1>Ingresar</h1>
+    <form action="" method="post" name="login">
+    <input type="text" name="username" placeholder="Nombre" required />
+    <input type="password" name="password" placeholder="Clave" required />
+    <input name="submit" type="submit" value="Ingresar" />
+    </form>
+    <p>¿No estas registrado aún? <a href='registration.php'>Registrate aqui!</a></p>
 </div>
 <?php } ?>
 </section>
@@ -85,7 +85,7 @@ footer {
 
 
 <footer>
-Copyright
+    Copyright
 </footer>
 
 </body>
