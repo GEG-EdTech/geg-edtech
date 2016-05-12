@@ -42,10 +42,9 @@ footer {
 
 <nav>
     <br>
+    <!--Mostrar todos los ramos del alumno-->
     <form method="POST" action="dashboard.php">
-        
         <?php
-        
          if(!$link){
             echo 'Error en la consulta';
         }
@@ -83,8 +82,9 @@ footer {
         }
         ?>
         <input type="submit" value="Seleccionar">
-         </form>
+        </form>
     
+    <!--Ingresar nuevo ramo a la BBDD del alumno-->
     Ingresar Nuevo Ramo<br>
     <form method="POST" action="agregarramo.php">
     Nombre Ramo: <input type="text" name="nombreramo"><br>

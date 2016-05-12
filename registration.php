@@ -66,7 +66,7 @@ footer {
     }else{
 ?>
 <div class="form">
-<h1>Registration</h1>
+<h1>Registro</h1>
 <form name="registration" action="" method="post">
 <input type="text" name="username" placeholder="Nombre" required />
 <input type="email" name="email" placeholder="Email" required />

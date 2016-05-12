@@ -18,8 +18,8 @@
     }
     
     else {
-    $sql="DELETE FROM ramo WHERE nombre_ramo='$ramo' AND users_id='$id'"; 
     //elimina el curso, la fila que tiene el nombre curso seleccionado 
+    $sql="DELETE FROM ramo WHERE nombre_ramo='$ramo' AND users_id='$id'"; 
 
     $result=mysqli_query($link, $sql);
         if(!$result){
