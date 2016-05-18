@@ -50,18 +50,18 @@ footer {
 	<?php
     // Ingresa los datos
     if (isset($_POST['username'])){
-        $username = $_POST['username'];
+        $userName = $_POST['username'];
         $password = $_POST['password'];
-		$username = stripslashes($username);
-		$username = mysql_real_escape_string($username);
+		$userName = stripslashes($userName);
+		$userName = mysql_real_escape_string($userName);
 		$password = stripslashes($password);
 		$password = mysql_real_escape_string($password);
 	//Revisa si el usuario ya existe
-        $query = "SELECT * FROM `users` WHERE username='$username' and password='".md5($password)."'";
+        $query = "SELECT * FROM `users` WHERE username='$userName' and password='".md5($password)."'";
 		$result = mysql_query($query) or die(mysql_error());
 		$rows = mysql_num_rows($result);
         if($rows==1){
-			$_SESSION['username'] = $username;
+			$_SESSION['username'] = $userName;
                         echo "<script type='text/javascript'> window.location='http://localhost/ingsoftware/index.php'; </script>";
 			// Redireccionar
             }else{

@@ -3,37 +3,36 @@
     include("auth.php"); //incluir auth.php en todas las paginas seguras
     // se inicializa con la base y se busca toda la informacion que se ingreso
     // a traves de $_POST
-    $nombreramo=$_POST['ramo'];
-                $nombreramo = stripslashes($nombreramo);
-		$nombreramo = mysql_real_escape_string($nombreramo);
-    $notaramo=$_POST['notaramo'];
-                $notaramo = stripslashes($notaramo);
-		$notaramo = mysql_real_escape_string($notaramo);
-    $pondnota=$_POST['pondnota'];
-                $pondnota = stripslashes($pondnota);
-		$pondnota = mysql_real_escape_string($pondnota);
-    $username = $_SESSION['username'];
-                $username = stripslashes($username);
-                $username = mysql_real_escape_string($username);
+    $nombreRamo=$_POST['ramo'];
+                $nombreRamo = stripslashes($nombreRamo);
+		$nombreRamo = mysql_real_escape_string($nombreRamo);
+    $notaRamo=$_POST['notaramo'];
+                $notaRamo = stripslashes($notaRamo);
+		$notaRamo = mysql_real_escape_string($notaRamo);
+    $pondNota=$_POST['pondnota'];
+                $pondNota = stripslashes($pondNota);
+		$pondNota = mysql_real_escape_string($pondNota);
+    $userName = $_SESSION['username'];
+                $userName = stripslashes($userName);
+                $userName = mysql_real_escape_string($userName);
                 
     // se busca informacion de la id sobre el usuario actual
-    $query_id="SELECT id FROM users WHERE username='$username'";
-    $result_id = mysql_query($query_id);
+    $queryId="SELECT id FROM users WHERE username='$userName'";
+    $resultId = mysql_query($queryId);
     
-    while ($fila = mysql_fetch_assoc($result_id)) {
+    while ($fila = mysql_fetch_assoc($resultId)) {
         $id = $fila['id'];
     }
     
     // se busca informacion de la id sobre el ramo actual
-    $query_id_ramo="SELECT id_ramo FROM ramo WHERE users_id='$id' and nombre_ramo='$nombreramo'";
-    $result_id_ramo = mysql_query($query_id_ramo);
+    $queryIdRamo="SELECT id_ramo FROM ramo WHERE users_id='$id' and nombre_ramo='$nombreRamo'";
+    $resultIdRamo = mysql_query($queryIdRamo);
     
-    while ($fila = mysql_fetch_assoc($result_id_ramo)) {
-        $id_ramo = $fila['id_ramo'];
+    while ($fila = mysql_fetch_assoc($resultIdRamo)) {
+        $idRamo = $fila['id_ramo'];
     }
-    
-    //OJO PROBLEMAS PARA INGRESAR NOTA
-    $query = "INSERT INTO nota (nota, ponderacion, ramo_id_ramo, ramo_users_id) VALUES ('$notaramo', '$pondnota','$id_ramo','$i')";
+
+    $query = "INSERT INTO nota (nota, ponderacion, ramo_id_ramo, ramo_users_id) VALUES ('$notaRamo', '$pondNota','$idRamo','$id')";
     $result = mysql_query($query);
         if($result){
             echo "<script type='text/javascript'> window.location='http://localhost/ingsoftware/index.php'; </script>";

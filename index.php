@@ -9,6 +9,7 @@ include("auth.php"); //incluir auth.php en todas las paginas seguras ?>
     <title>Inicio</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="css/style.css" />
+    <link href="jquery-ui.css" rel="stylesheet">
 <style>
 header {
     background-color:black;
@@ -52,8 +53,8 @@ footer {
 	position: relative;
 	
 	box-shadow: 
-		inset 0 -2px 10px 1px rgba(0, 0, 0, 0.2), 
-		0 5px 20px -10px rgba(0, 0, 0, 0.2);
+		inset 0 -2px 10px 1px rgba(0, 0, 0, 0.75), 
+		0 5px 20px -10px rgba(0, 0, 0, 1);
 }
 
 .cell {
@@ -76,7 +77,7 @@ footer {
 	top: 0;
 	left: 0;
 	
-	text-shadow: 0 0 1px rgba(255, 255, 255, 1);
+	text-shadow: 0 0 5px rgba(255, 255, 255, 1);
 }
 
 #timer_controls {
@@ -92,17 +93,15 @@ footer {
 }
 input[name="controls"] {display: none;}
 
-/*Control code*/
+/*Panel de control*/
 #stop:checked~.timer .numbers {animation-play-state: paused;}
 #start:checked~.timer .numbers {animation-play-state: running;}
 #reset:checked~.timer .numbers {animation: none;}
 
 .moveten {
-	/*The digits move but dont look good. We will use steps now
-	10 digits = 10 steps. You can now see the digits swapping instead of 
-	moving pixel-by-pixel*/
+	/*Animacion de los digitos de a 10 digitos por 10 pasos*/
 	animation: moveten 1s steps(10, end) infinite;
-	/*By default animation should be paused*/
+	/*Se crea una pausa a la animacion*/
 	animation-play-state: paused;
 }
 .movesix {
@@ -110,44 +109,40 @@ input[name="controls"] {display: none;}
 	animation-play-state: paused;
 }
 
-/*Now we need to sync the animation speed with time speed*/
-/*One second per digit. 10 digits. Hence 10s*/
+/*Una animacion por segundo*/
+/*Se crea el calculo de lo que significan 10 segundos*/
 .second {animation-duration: 10s;}
-.tensecond {animation-duration: 60s;} /*60 times .second*/
+.tensecond {animation-duration: 60s;}
 
-.milisecond {animation-duration: 1s;} /*1/10th of .second*/
+/*Se crea el calculo de lo que significan milisegundos*/
+.milisecond {animation-duration: 1s;} 
+/*Se crea el calculo de lo que significan 10 milisegundos*/
 .tenmilisecond {animation-duration: 0.1s;}
+/*Se crea el calculo de lo que significan 100 milisegundos*/
 .hundredmilisecond {animation-duration: 0.01s;}
 
-.minute {animation-duration: 600s;} /*60 times .second*/
-.tenminute {animation-duration: 3600s;} /*60 times .minute*/
+/*Se crea el calculo de lo que significa un minuto*/
+.minute {animation-duration: 600s;}
+/*Se crea el calculo de lo que significan 10 minutos*/
+.tenminute {animation-duration: 3600s;}
 
-.hour {animation-duration: 36000s;} /*60 times .minute*/
-.tenhour {animation-duration: 360000s;} /*10 times .hour*/
+/*Se crea el calculo de lo que significa una hora*/
+.hour {animation-duration: 36000s;} 
+/*Se crea el calculo de lo que significan 10 hora*/
+.tenhour {animation-duration: 360000s;} 
 
-/*The stopwatch looks good now. Lets add some styles*/
-
-/*Lets animate the digit now - the main part of this tutorial*/
-/*We are using prefixfree, so no need of vendor prefixes*/
-/*The logic of the animation is to alter the 'top' value of the absolutely
-positioned .numbers*/
-/*Minutes and Seconds should be limited to only '60' and not '100'
-Hence we need to create 2 animations. One with 10 steps and 10 digits and
-the other one with 6 steps and 6 digits*/
 @keyframes moveten {
 	0% {top: 0;}
 	100% {top: -400px;} 
-	/*height = 40. digits = 10. hence -400 to move it completely to the top*/
-}
+	}
 
 @keyframes movesix {
 	0% {top: 0;}
 	100% {top: -240px;} 
-	/*height = 40. digits = 6. hence -240 to move it completely to the top*/
 }
 
 
-/*Lets use a better font for the numbers*/
+/*Tipografia utilizada en los numeros*/
 @font-face {
 	font-family: 'digital';
 	src: url('http://thecodeplayer.com/uploads/fonts/DS-DIGI.TTF');
@@ -203,10 +198,10 @@ the other one with 6 steps and 6 digits*/
         }
         ?>
         <input type="submit" value="Seleccionar">
-        </form>
+        </form><br>
     
     <!--Ingresar nuevo ramo a la BBDD del alumno-->
-    Ingresar Nuevo Ramo<br>
+    <h3>Ingresar Nuevo Ramo</h3>
     <form method="POST" action="agregarramo.php">
     Nombre Ramo: <input type="text" name="nombreramo"><br>
     <input type="submit" value="Guardar">
@@ -215,8 +210,49 @@ the other one with 6 steps and 6 digits*/
 </nav>
 
 <section>
-    <p>Bienvenido <?php echo $_SESSION['username']; ?>!</p>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <h1>Bienvenido <?php echo $_SESSION['username']; ?>!</h1><br>
+    <!--Se muestra el promedio general del alumno-->
+    <h3>Promedio general</h3><br>
+    
+    <h4>Promedio real: </h4>
+    <?php
+    //se busca en la BBDD cada nota con su respectiva ponderacion.
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id'";
+    $resultNota = mysql_query($query);
+    while($row = mysql_fetch_array($resultNota)){ 
+        $sumaReal = $sumaReal + ($row['nota'] * $row['ponderacion']);
+    }
+    echo $sumaReal;?><br><br>
+    
+    <h4>Promedio esperado con rendimiento actual: </h4>
+    <?php
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id'";
+    $resultNota = mysql_query($query);
+    while($row = mysql_fetch_array($resultNota)){ 
+        $sumaPonderacion = $sumaPonderacion + $row['ponderacion'];
+        $sumaNota = $sumaNota + $row['nota'];
+        $contador = $contador + 1;
+        $suma = $suma + ($row['nota'] * $row['ponderacion']);
+    }
+    $nota = $sumaNota / $contador;
+    $restoPonderacion= 1 - $sumaPonderacion;
+    $suma = $suma + ($nota * $restoPonderacion);
+    echo $suma;
+    ?><br><br>
+    <!--Mostrar gráfico de rendimiento actual de alumno-->
+    <h4>Gráfico de rendimiento</h4><br>
+    <div id="progressbar"></div><br>
+    
+    <!--Nota que espero sacarme como promedio general-->
+    
+    
+    
+    
+    
+    
+    
+    
+    <br><br><br><br><br><br><br><br><br>
 </section>
  
 <aside>
@@ -275,6 +311,17 @@ the other one with 6 steps and 6 digits*/
 <footer>
 Copyright
 </footer>
+    
+<!--Muestra caracteristicas sobre el grafico -->
+<script src="external/jquery/jquery.js"></script>
+<script src="jquery-ui.js"></script>
+<script>
+$( "#progressbar" ).progressbar({
+	value: <?php echo $suma; ?>,
+        min: 0, 
+        max: 7
+});
+</script>
 
 </body>
 </html>
