@@ -48,17 +48,17 @@ footer {
 	require('db.php');
     // se requiere para incluir informacion en la BBDD
     if (isset($_POST['username'])){
-        $userName = $_POST['username'];
-	$eMail = $_POST['email'];
+        $username = $_POST['username'];
+	$email = $_POST['email'];
         $password = $_POST['password'];
-		$userName = stripslashes($userName);
-		$userName = mysql_real_escape_string($userName);
-		$eMail = stripslashes($eMail);
-		$eMail = mysql_real_escape_string($eMail);
+		$username = stripslashes($username);
+		$username = mysql_real_escape_string($username);
+		$email = stripslashes($email);
+		$email = mysql_real_escape_string($email);
 		$password = stripslashes($password);
 		$password = mysql_real_escape_string($password);
-		$trnDate = date("Y-m-d H:i:s");
-        $query = "INSERT into `users` (username, password, email, trn_date) VALUES ('$userName', '".md5($password)."', '$eMail', '$trnDate')";
+		$trn_date = date("Y-m-d H:i:s");
+        $query = "INSERT into `users` (username, password, email, trn_date) VALUES ('$username', '".md5($password)."', '$email', '$trn_date')";
         $result = mysql_query($query);
         if($result){
             echo "<div class='form'><h3>Fuistes registrado satisfactoriamente.</h3><br/>Has click aqui para <a href='login.php'>Ingresar</a></div>";
@@ -73,7 +73,6 @@ footer {
 <input type="password" name="password" placeholder="Clave" required />
 <input type="submit" name="submit" value="Registrar" />
 </form>
-<p>¿Ya estas registrado? <a href='login.php'>Ingresa aqui!</a></p>
 </div>
 <?php } ?>
 </section>
@@ -81,6 +80,7 @@ footer {
 <aside>
 
 </aside>
+
 
 <footer>
 Copyright

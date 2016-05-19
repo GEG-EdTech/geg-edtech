@@ -193,15 +193,17 @@ input::-moz-focus-outer {
 }
 input[name="controls"] {display: none;}
 
-/*Panel de control*/
+/*Control code*/
 #stop:checked~.timer .numbers {animation-play-state: paused;}
 #start:checked~.timer .numbers {animation-play-state: running;}
 #reset:checked~.timer .numbers {animation: none;}
 
 .moveten {
-	/*Animacion de los digitos de a 10 digitos por 10 pasos*/
+	/*The digits move but dont look good. We will use steps now
+	10 digits = 10 steps. You can now see the digits swapping instead of 
+	moving pixel-by-pixel*/
 	animation: moveten 1s steps(10, end) infinite;
-	/*Se crea una pausa a la animacion*/
+	/*By default animation should be paused*/
 	animation-play-state: paused;
 }
 .movesix {
@@ -209,40 +211,44 @@ input[name="controls"] {display: none;}
 	animation-play-state: paused;
 }
 
-/*Una animacion por segundo*/
-/*Se crea el calculo de lo que significan 10 segundos*/
+/*Now we need to sync the animation speed with time speed*/
+/*One second per digit. 10 digits. Hence 10s*/
 .second {animation-duration: 10s;}
-.tensecond {animation-duration: 60s;}
+.tensecond {animation-duration: 60s;} /*60 times .second*/
 
-/*Se crea el calculo de lo que significan milisegundos*/
-.milisecond {animation-duration: 1s;} 
-/*Se crea el calculo de lo que significan 10 milisegundos*/
+.milisecond {animation-duration: 1s;} /*1/10th of .second*/
 .tenmilisecond {animation-duration: 0.1s;}
-/*Se crea el calculo de lo que significan 100 milisegundos*/
 .hundredmilisecond {animation-duration: 0.01s;}
 
-/*Se crea el calculo de lo que significa un minuto*/
-.minute {animation-duration: 600s;}
-/*Se crea el calculo de lo que significan 10 minutos*/
-.tenminute {animation-duration: 3600s;}
+.minute {animation-duration: 600s;} /*60 times .second*/
+.tenminute {animation-duration: 3600s;} /*60 times .minute*/
 
-/*Se crea el calculo de lo que significa una hora*/
-.hour {animation-duration: 36000s;} 
-/*Se crea el calculo de lo que significan 10 hora*/
-.tenhour {animation-duration: 360000s;} 
+.hour {animation-duration: 36000s;} /*60 times .minute*/
+.tenhour {animation-duration: 360000s;} /*10 times .hour*/
 
+/*The stopwatch looks good now. Lets add some styles*/
+
+/*Lets animate the digit now - the main part of this tutorial*/
+/*We are using prefixfree, so no need of vendor prefixes*/
+/*The logic of the animation is to alter the 'top' value of the absolutely
+positioned .numbers*/
+/*Minutes and Seconds should be limited to only '60' and not '100'
+Hence we need to create 2 animations. One with 10 steps and 10 digits and
+the other one with 6 steps and 6 digits*/
 @keyframes moveten {
 	0% {top: 0;}
 	100% {top: -400px;} 
-	}
+	/*height = 40. digits = 10. hence -400 to move it completely to the top*/
+}
 
 @keyframes movesix {
 	0% {top: 0;}
 	100% {top: -240px;} 
+	/*height = 40. digits = 6. hence -240 to move it completely to the top*/
 }
 
 
-/*Tipografia utilizada en los numeros*/
+/*Lets use a better font for the numbers*/
 @font-face {
 	font-family: 'digital';
 	src: url('http://thecodeplayer.com/uploads/fonts/DS-DIGI.TTF');
@@ -268,13 +274,13 @@ input[name="controls"] {display: none;}
         else
             {
         //busca el ID del usuario de la session
-        $userName = $_SESSION['username'];
-                $userName = stripslashes($userName);
-                $userName = mysql_real_escape_string($userName);
-        $queryId="SELECT id FROM users WHERE username='$userName'";
-        $resultId = mysql_query($queryId);
+        $username = $_SESSION['username'];
+                $username = stripslashes($username);
+                $username = mysql_real_escape_string($username);
+        $query_id="SELECT id FROM users WHERE username='$username'";
+        $result_id = mysql_query($query_id);
 
-        while ($fila = mysql_fetch_assoc($resultId)) {
+        while ($fila = mysql_fetch_assoc($result_id)) {
             $id = $fila['id'];
         }
         $sql="SELECT nombre_ramo FROM ramo WHERE users_id='$id'";  
@@ -299,10 +305,9 @@ input[name="controls"] {display: none;}
         }
         ?>
         <input type="submit" value="Seleccionar">
-         </form><br>
+         </form>
     
-    <!--Ingresar nuevo ramo a la BBDD del alumno-->
-    <h3>Ingresar Nuevo Ramo</h3>
+    Ingresar Nuevo Ramo<br>
     <form method="POST" action="agregarramo.php">
     Nombre Ramo: <input type="text" name="nombreramo"><br>
     <input type="submit" value="Guardar">
@@ -314,11 +319,13 @@ input[name="controls"] {display: none;}
 <section>
 <br>
 <!--Se muestra el nombre del ramo seleccionado-->
-<?php
-    $nombreRamo=$_POST['ramo'];
-                $nombreRamo = stripslashes($nombreRamo);
-		$nombreRamo = mysql_real_escape_string($nombreRamo);
-    echo "<h2>".$nombreRamo."</h2>";
+<?php 
+    require('db.php');  //ingreso y conexion a la BBDD
+    include("auth.php"); //incluir auth.php en todas las paginas seguras
+    $nombreramo=$_POST['ramo'];
+                $nombreramo = stripslashes($nombreramo);
+		$nombreramo = mysql_real_escape_string($nombreramo);
+    echo "<h2>".$nombreramo."</h2>";
 ?>
 <br>
 
@@ -326,7 +333,7 @@ input[name="controls"] {display: none;}
 <h4>Dificultad en el ramo:
 <!--Se guarda la dificultad del alumno en el ramo -->
 <form method="POST" action="agregardificultad.php">
-    <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
+    <input type="hidden" name="ramo" value="<?php echo $nombreramo; ?>">
     <div class="range-slider">
         <input class="range-slider__range" type="range" name="dificultad" min="0" max="10" value="5" style="width: 300px; height: 10px;">
         <span class="range-slider__value"></span>
@@ -341,15 +348,15 @@ input[name="controls"] {display: none;}
 <!--Mostrar las notas actuales en el ramo del alumno-->
 <?php
     // se busca informacion de la id sobre el ramo actual
-    $queryIdRamo="SELECT id_ramo FROM ramo WHERE users_id='$id' and nombre_ramo='$nombreRamo'";
-    $resultIdRamo = mysql_query($queryIdRamo);
+    $query_id_ramo="SELECT id_ramo FROM ramo WHERE users_id='$id' and nombre_ramo='$nombreramo'";
+    $result_id_ramo = mysql_query($query_id_ramo);
     
-    while ($fila = mysql_fetch_assoc($resultIdRamo)) {
-        $idRamo = $fila['id_ramo'];
+    while ($fila = mysql_fetch_assoc($result_id_ramo)) {
+        $id_ramo = $fila['id_ramo'];
     }
 
-    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$idRamo'";
-    $resultNota = mysql_query($query);
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$id_ramo'";
+    $result_nota = mysql_query($query);
 
     echo "<table style='width:70%'>
     <tr>
@@ -357,7 +364,7 @@ input[name="controls"] {display: none;}
     <th>Ponderacion</th>
     </tr>";
 
-    while($row = mysql_fetch_array($resultNota)){
+    while($row = mysql_fetch_array($result_nota)){
     echo "<tr>";
     echo "<td>" . $row['nota'] . "</td>";
     echo "<td>" . $row['ponderacion'] . "</td>";
@@ -367,75 +374,32 @@ input[name="controls"] {display: none;}
     ?>
 
 <!--Mostrar promedio en el ramo del alumno-->
-    <h4>Promedio real: </h4>
+    <h4>Nota real: </h4>
     <?php
-    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$idRamo'";
-    $resultNota = mysql_query($query);
-    while($row = mysql_fetch_array($resultNota)){ 
-        $sumaReal = $sumaReal + ($row['nota'] * $row['ponderacion']);
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$id_ramo'";
+    $result_nota = mysql_query($query);
+    while($row = mysql_fetch_array($result_nota)){ 
+        $sumareal = $sumareal + ($row['nota'] * $row['ponderacion']);
     }
-    echo $sumaReal;
-    $sql="UPDATE ramo SET promedio_ramo='$sumaReal' WHERE nombre_ramo='$nombreRamo' AND users_id='$id'"; 
-    $result=mysql_query($sql);
-    if ($sumaReal == 0){
-        echo "No hay datos de notas";
-    }
-    
+    echo $sumareal;
     ?><br><br>
     
 <!--Mostrar promedio en el ramo del alumno-->
-    <h4>Promedio esperado con rendimiento actual: </h4>
+    <h4>Nota esperada con rendimiento actual: </h4>
     <?php
-    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$idRamo'";
-    $resultNota = mysql_query($query);
-    while($row = mysql_fetch_array($resultNota)){ 
-        $sumaPonderacion = $sumaPonderacion + $row['ponderacion'];
-        $sumaNota = $sumaNota + $row['nota'];
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$id_ramo'";
+    $result_nota = mysql_query($query);
+    while($row = mysql_fetch_array($result_nota)){ 
+        $sumaponderacion = $sumaponderacion + $row['ponderacion'];
+        $sumanota = $sumanota + $row['nota'];
         $contador = $contador + 1;
         $suma = $suma + ($row['nota'] * $row['ponderacion']);
     }
-    if ($contador != 0){
-        $nota = $sumaNota / $contador;
-    }
-    $restoPonderacion= 1 - $sumaPonderacion;
-    $suma = $suma + ($nota * $restoPonderacion);
-    if ($suma != 0){
-        echo $suma;
-    }
-    if ($suma == 0){
-        echo "No hay datos de notas";
-    }
-    ?><br><br>
-    
-<!--Nota que espero sacarme como promedio-->
-    <h4>Promedio objetivo: 
-    <?php 
-        $query = "SELECT promedio_objetivo FROM ramo WHERE users_id='$id' and nombre_ramo='$nombreRamo'";
-        $resultPromObj = mysql_query($query);
-        while ($fila = mysql_fetch_assoc($resultPromObj)) {
-            $resultPromObjt = $fila['promedio_objetivo'];
-        }
-        echo $resultPromObjt;
-    ?></h4>
-    <form method="POST" action="agregarpromedio.php">
-        <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
-        <div class="range-slider">
-            <input class="range-slider__range" type="range" name="promedioesperar" min="0" max="7" value="
-                <?php 
-                 if ($resultPromObjt==NULL){
-                    echo $suma; 
-                    
-                 }
-                else {
-                    echo $resultPromObjt;
-                }
-                ?>
-               " style="width: 300px; height: 10px;">
-            <span class="range-slider__value"></span>
-        </div>
-        <input type="submit" value="Guardar">
-    </form><br>
-
+    $nota = $sumanota / $contador;
+    $restoponderacion= 1 - $sumaponderacion;
+    $suma = $suma + ($nota * $restoponderacion);
+    echo $suma;
+    ?><br>
 
 <!--Permitir agregar notas al ramo-->
     <br>
@@ -443,13 +407,12 @@ input[name="controls"] {display: none;}
     <form method="POST" action="agregarnota.php">
     Nota: <input type="text" name="notaramo"><br>
     Ponderacion: <input type="text" name="pondnota"><br>
-    <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
+    <input type="hidden" name="ramo" value="<?php echo $nombreramo; ?>">
     <input type="submit" value="Guardar">
-    </form><br>
+    </form>
 <!--Elimina al ramo del alumno-->
-    <h4>¿Desea eliminar este ramo?</h4>
     <form method="POST" action="eliminarramo.php">
-       <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
+       <input type="hidden" name="ramo" value="<?php echo $nombreramo; ?>">
        <input type="submit" value="Eliminar">
     </form><br>
 
