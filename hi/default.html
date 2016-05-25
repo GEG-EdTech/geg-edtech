@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>My Calendar</title>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.1/fullcalendar.min.css"/>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<link rel="stylesheet" href="jquery-ui.min.css">
+<script src="external/jquery/jquery.js"></script>
+<script src="jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"> </script>
+</head>
+<!-- We will attach the calendar to this element -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.1/fullcalendar.min.js"></script>
+<script src='es.js'></script>
+<script>
+
+ $(document).ready(function() {
+  var date = new Date();
+  var d = date.getDate();
+  var m = date.getMonth();
+  var y = date.getFullYear();
+
+  var calendar = $('#calendar').fullCalendar({
+   editable: true,
+   header: {
+    left: 'prev,next today',
+    center: 'title',
+    right: 'month,agendaWeek,agendaDay'
+   },
+  
+   events: "http://localhost/hi/events.php",
+   
+   // Convert the allDay from string to boolean
+   eventRender: function(event, element, view) {
+    if (event.allDay === 'true') {
+     event.allDay = true;
+    } else {
+     event.allDay = false;
+    }
+   },
+   selectable: true,
+   selectHelper: true,
+   dayClick: function(event,jsEvent,view){
+	   $("#eventLink").attr("href",event.url);
+	   $("#eventContent").dialog({modal: true});
+	   $("#eventInfo").html;
+	   $("#acept").click(function(){
+			$("#eventContent").dialog('close');
+			title=$("#title").val();
+			url=$("#url").val();
+			guarda=1;
+			return false;
+	});
+	   
+   },
+   
+   select: function(start, end, allDay) {
+   if (guarda==1) {
+	  guarda=0;
+	alert("yes");
+   var start =moment(start).format('YYYY-MM-DD');
+   var end = moment(end).format('YYYY-MM-DD');
+   $.ajax({
+   url: 'http://localhost/hi/add_events.php',
+   data: 'title='+ title +'&start='+ start +'&end='+ end +'&url='+ url ,
+   type: "POST",
+   success: function(json) {
+   alert('Added Successfully');
+   $("#title").val("");
+	$("#url").val("");
+   }
+   });
+   calendar.fullCalendar('renderEvent',
+   {
+   title: title,
+   start: start,
+   end: end,
+   allDay: allDay
+   },
+   true // make the event "stick"
+   );
+   }
+   calendar.fullCalendar('unselect');
+   },
+   
+   editable: true,
+   eventDrop: function(event, delta) {
+   var start = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm:ss");
+   var end = $.fullCalendar.formatDate(event.end, "yyyy-MM-dd HH:mm:ss");
+   $.ajax({
+   url: 'http://localhost/hi/update_events.php',
+   data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id ,
+   type: "POST",
+   success: function(json) {
+    alert("Updated Successfully");
+   }
+   });
+   },
+   eventResize: function(event) {
+   var start = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm:ss");
+   var end = $.fullCalendar.formatDate(event.end, "yyyy-MM-dd HH:mm:ss");
+   $.ajax({
+    url: 'http://localhost/hi/update_events.php',
+    data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id ,
+    type: "POST",
+    success: function(json) {
+     alert("Updated Successfully");
+    }
+   });
+
+}
+   
+  });
+  
+ });
+
+</script>
+<style>
+
+ body {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 14px;
+  font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+
+  }
+
+
+ #calendar {
+  width: 900px;
+  margin: 0 auto;
+  }
+
+</style>
+</head>
+<body>
+
+<div id='calendar'></div>
+<div id="eventContent" title="crear evento" style="display:none" >
+    <div id="eventInfo">
+ 	<label>titulo
+ 	<input type="text" name="title" id="title" />
+ 	</label>
+ 	<label>
+ 	<input type="text" name="url" id="url" />
+ 	</label>
+ 	<button type="button" id="acept"> Aceptar</button>
+    </div>
+    <p><strong><a id="eventLink" target="_blank">
+    
+    
+    </a></strong></p>
+</div>
+   
+
+</body>
+</html>

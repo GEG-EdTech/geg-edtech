@@ -1,5 +1,5 @@
 <?php 
-require('db.php');  //ingreso y conexion a la BBDD
+require("db.php");  //ingreso y conexion a la BBDD
 include("auth.php"); //incluir auth.php en todas las paginas seguras ?>
 <!DOCTYPE html>
 <html>
@@ -157,8 +157,6 @@ input[name="controls"] {display: none;}
 </header>
 
 <nav>
-    <!-- Cerrar cuenta -->
-    <a href="logout.php">Cerrar Sesión</a>
     <br>
     <!--Mostrar todos los ramos del alumno-->
     <form method="POST" action="dashboard.php">
@@ -254,18 +252,18 @@ input[name="controls"] {display: none;}
     
     
     
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br>
 </section>
  
 <aside>
+    <br>
     <!--Calendario-->
     <div>
-        <iframe src="http://localhost/ingsoftware/calendario.php" width="41%" height="500" frameBorder="0" scrolling="no">
-        </iframe>
-    </div>
-    
+    <iframe src="http://localhost/final/pruebas2.html">
+    </iframe>
+</div>
     <!--Tiempo de estudio-->
-    <div style="position:relative;left:150px"><br><br>
+    Cuenta cuanto estudias de verdad <br>
     <input id="start" name="controls" type="radio" />
     <input id="stop" name="controls" type="radio" />
     <input id="reset" name="controls" type="radio" />
@@ -302,13 +300,13 @@ input[name="controls"] {display: none;}
             </div>
     </div>
     <!-- Controladores del tiempo -->
-    <div id="timer_controls" style="position:relative;left:40px"><br>
+    <div id="timer_controls"><br>
             <label for="start">Iniciar</label>
             <label for="stop">Detener</label>
             <label for="reset">Reiniciar</label>
     </div>
     <script src="http://thecodeplayer.com/uploads/js/prefixfree.js" type="text/javascript"></script>
-    <br></div>
+    <br><br><a href="logout.php">Logout</a>
     
 </aside>
 
@@ -327,9 +325,6 @@ $( "#progressbar" ).progressbar({
         max: 7
 });
 </script>
-
-<!--Scrip para enviar mails de recordatorio -->
-
 
 </body>
 </html>

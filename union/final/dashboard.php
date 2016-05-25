@@ -1,15 +1,18 @@
 <?php 
-require('db.php');  //ingreso y conexion a la BBDD
-include("auth.php"); //incluir auth.php en todas las paginas seguras ?>
+require("db.php");   //ingreso y conexion a la BBDD
+include("auth.php"); //incluir auth.php en todas las paginas seguras?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Inicio</title>
+    <title>Información</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="css/style.css" />
     <link href="jquery-ui.css" rel="stylesheet">
+
+<!--Informacion sobre la pagina-->
 <style>
 header {
     background-color:black;
@@ -36,6 +39,103 @@ footer {
     clear:both;
     text-align:center;
     padding:5px;	 	 
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+}
+th, td {
+    padding: 5px;
+}
+</style>
+
+<!--Informacion sobre el slider-->
+<style>
+.range-slider {
+  margin: 0 0 0 0%;
+}
+
+.range-slider {
+  width: 100%;
+}
+
+.range-slider__range {
+  -webkit-appearance: none;
+  width: calc(100% - (73px));
+  height: 10px;
+  border-radius: 5px;
+  background: #d7dcdf;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+.range-slider__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #78b941;
+  cursor: pointer;
+  -webkit-transition: background .15s ease-in-out;
+  transition: background .15s ease-in-out;
+}
+.range-slider__range::-webkit-slider-thumb:hover {
+  background: #1abc9c;
+}
+.range-slider__range:active::-webkit-slider-thumb {
+  background: #1abc9c;
+}
+.range-slider__range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 50%;
+  background: #78b941;
+  cursor: pointer;
+  -webkit-transition: background .15s ease-in-out;
+  transition: background .15s ease-in-out;
+}
+.range-slider__range::-moz-range-thumb:hover {
+  background: #1abc9c;
+}
+.range-slider__range:active::-moz-range-thumb {
+  background: #1abc9c;
+}
+
+.range-slider__value {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  color: #fff;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 3px;
+  background: #78b941;
+  padding: 5px 10px;
+  margin-left: 8px;
+}
+.range-slider__value:after {
+  position: absolute;
+  top: 8px;
+  left: -7px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-right: 7px solid #70ae3c;
+  border-bottom: 7px solid transparent;
+  content: '';
+}
+
+::-moz-range-track {
+  background: #78b941;
+  border: 0;
+}
+
+input::-moz-focus-inner,
+input::-moz-focus-outer {
+  border: 0;
 }
 </style>
 
@@ -157,25 +257,24 @@ input[name="controls"] {display: none;}
 </header>
 
 <nav>
-    <!-- Cerrar cuenta -->
-    <a href="logout.php">Cerrar Sesión</a>
-    <br>
-    <!--Mostrar todos los ramos del alumno-->
+  <br>
     <form method="POST" action="dashboard.php">
+        
         <?php
+        
          if(!$link){
             echo 'Error en la consulta';
         }
         else
             {
         //busca el ID del usuario de la session
-        $username = $_SESSION['username'];
-                $username = stripslashes($username);
-                $username = mysql_real_escape_string($username);
-        $query_id="SELECT id FROM users WHERE username='$username'";
-        $result_id = mysql_query($query_id);
+        $userName = $_SESSION['username'];
+                $userName = stripslashes($userName);
+                $userName = mysql_real_escape_string($userName);
+        $queryId="SELECT id FROM users WHERE username='$userName'";
+        $resultId = mysql_query($queryId);
 
-        while ($fila = mysql_fetch_assoc($result_id)) {
+        while ($fila = mysql_fetch_assoc($resultId)) {
             $id = $fila['id'];
         }
         $sql="SELECT nombre_ramo FROM ramo WHERE users_id='$id'";  
@@ -200,7 +299,7 @@ input[name="controls"] {display: none;}
         }
         ?>
         <input type="submit" value="Seleccionar">
-        </form><br>
+         </form><br>
     
     <!--Ingresar nuevo ramo a la BBDD del alumno-->
     <h3>Ingresar Nuevo Ramo</h3>
@@ -209,26 +308,85 @@ input[name="controls"] {display: none;}
     <input type="submit" value="Guardar">
     </form>
 
+
 </nav>
 
 <section>
-    <h1>Bienvenido <?php echo $_SESSION['username']; ?>!</h1><br>
-    <!--Se muestra el promedio general del alumno-->
-    <h3>Promedio general</h3><br>
+<br>
+<!--Se muestra el nombre del ramo seleccionado-->
+<?php
+    $nombreRamo=$_POST['ramo'];
+                $nombreRamo = stripslashes($nombreRamo);
+		$nombreRamo = mysql_real_escape_string($nombreRamo);
+    echo "<h2>".$nombreRamo."</h2>";
+?>
+<br>
+
+<!--Mostrar el slider de la dificultad-->
+<h4>Dificultad en el ramo:
+<!--Se guarda la dificultad del alumno en el ramo -->
+<form method="POST" action="agregardificultad.php">
+    <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
+    <div class="range-slider">
+        <input class="range-slider__range" type="range" name="dificultad" min="0" max="10" value="5" style="width: 300px; height: 10px;">
+        <span class="range-slider__value"></span>
+    </div>
+    <input type="submit" value="Guardar">
+</form><br>
+
+<!--Mostrar gráfico de rendimiento actual de alumno-->
+<h4>Gráfico de rendimiento</h4><br>
+<div id="progressbar"></div><br>
+
+<!--Mostrar las notas actuales en el ramo del alumno-->
+<?php
+    // se busca informacion de la id sobre el ramo actual
+    $queryIdRamo="SELECT id_ramo FROM ramo WHERE users_id='$id' and nombre_ramo='$nombreRamo'";
+    $resultIdRamo = mysql_query($queryIdRamo);
     
+    while ($fila = mysql_fetch_assoc($resultIdRamo)) {
+        $idRamo = $fila['id_ramo'];
+    }
+
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$idRamo'";
+    $resultNota = mysql_query($query);
+
+    echo "<table style='width:70%'>
+    <tr>
+    <th>Nota</th>
+    <th>Ponderacion</th>
+    </tr>";
+
+    while($row = mysql_fetch_array($resultNota)){
+    echo "<tr>";
+    echo "<td>" . $row['nota'] . "</td>";
+    echo "<td>" . $row['ponderacion'] . "</td>";
+    echo "</tr>";
+    }
+    echo "</table><br>";
+    ?>
+
+<!--Mostrar promedio en el ramo del alumno-->
     <h4>Promedio real: </h4>
     <?php
-    //se busca en la BBDD cada nota con su respectiva ponderacion.
-    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id'";
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$idRamo'";
     $resultNota = mysql_query($query);
     while($row = mysql_fetch_array($resultNota)){ 
         $sumaReal = $sumaReal + ($row['nota'] * $row['ponderacion']);
     }
-    echo $sumaReal;?><br><br>
+    echo $sumaReal;
+    $sql="UPDATE ramo SET promedio_ramo='$sumaReal' WHERE nombre_ramo='$nombreRamo' AND users_id='$id'"; 
+    $result=mysql_query($sql);
+    if ($sumaReal == 0){
+        echo "No hay datos de notas";
+    }
     
+    ?><br><br>
+    
+<!--Mostrar promedio en el ramo del alumno-->
     <h4>Promedio esperado con rendimiento actual: </h4>
     <?php
-    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id'";
+    $query = "SELECT nota, ponderacion FROM nota WHERE ramo_users_id='$id' and ramo_id_ramo='$idRamo'";
     $resultNota = mysql_query($query);
     while($row = mysql_fetch_array($resultNota)){ 
         $sumaPonderacion = $sumaPonderacion + $row['ponderacion'];
@@ -236,36 +394,76 @@ input[name="controls"] {display: none;}
         $contador = $contador + 1;
         $suma = $suma + ($row['nota'] * $row['ponderacion']);
     }
-    $nota = $sumaNota / $contador;
+    if ($contador != 0){
+        $nota = $sumaNota / $contador;
+    }
     $restoPonderacion= 1 - $sumaPonderacion;
     $suma = $suma + ($nota * $restoPonderacion);
-    echo $suma;
+    if ($suma != 0){
+        echo $suma;
+    }
+    if ($suma == 0){
+        echo "No hay datos de notas";
+    }
     ?><br><br>
-    <!--Mostrar gráfico de rendimiento actual de alumno-->
-    <h4>Gráfico de rendimiento</h4><br>
-    <div id="progressbar"></div><br>
     
-    <!--Nota que espero sacarme como promedio general-->
-    
-    
-    
-    
-    
-    
-    
-    
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<!--Nota que espero sacarme como promedio-->
+    <h4>Promedio objetivo: 
+    <?php 
+        $query = "SELECT promedio_objetivo FROM ramo WHERE users_id='$id' and nombre_ramo='$nombreRamo'";
+        $resultPromObj = mysql_query($query);
+        while ($fila = mysql_fetch_assoc($resultPromObj)) {
+            $resultPromObjt = $fila['promedio_objetivo'];
+        }
+        echo $resultPromObjt;
+    ?></h4>
+    <form method="POST" action="agregarpromedio.php">
+        <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
+        <div class="range-slider">
+            <input class="range-slider__range" type="range" name="promedioesperar" min="0" max="7" value="
+                <?php 
+                 if ($resultPromObjt==NULL){
+                    echo $suma; 
+                    
+                 }
+                else {
+                    echo $resultPromObjt;
+                }
+                ?>
+               " style="width: 300px; height: 10px;">
+            <span class="range-slider__value"></span>
+        </div>
+        <input type="submit" value="Guardar">
+    </form><br>
+
+
+<!--Permitir agregar notas al ramo-->
+    <br>
+    <h4>Ingresar Nueva Nota</h4>
+    <form method="POST" action="agregarnota.php">
+    Nota: <input type="text" name="notaramo"><br>
+    Ponderacion: <input type="text" name="pondnota"><br>
+    <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
+    <input type="submit" value="Guardar">
+    </form><br>
+<!--Elimina al ramo del alumno-->
+    <h4>¿Desea eliminar este ramo?</h4>
+    <form method="POST" action="eliminarramo.php">
+       <input type="hidden" name="ramo" value="<?php echo $nombreRamo; ?>">
+       <input type="submit" value="Eliminar">
+    </form><br>
+
+<!--Vuelve al menu principal-->
+<h4><a href="index.php">Inicio</a></h4>
+
 </section>
  
 <aside>
+    <br>
     <!--Calendario-->
-    <div>
-        <iframe src="http://localhost/ingsoftware/calendario.php" width="41%" height="500" frameBorder="0" scrolling="no">
-        </iframe>
-    </div>
     
     <!--Tiempo de estudio-->
-    <div style="position:relative;left:150px"><br><br>
+    Cuenta cuanto estudias de verdad <br>
     <input id="start" name="controls" type="radio" />
     <input id="stop" name="controls" type="radio" />
     <input id="reset" name="controls" type="radio" />
@@ -302,21 +500,20 @@ input[name="controls"] {display: none;}
             </div>
     </div>
     <!-- Controladores del tiempo -->
-    <div id="timer_controls" style="position:relative;left:40px"><br>
+    <div id="timer_controls"><br>
             <label for="start">Iniciar</label>
             <label for="stop">Detener</label>
             <label for="reset">Reiniciar</label>
     </div>
     <script src="http://thecodeplayer.com/uploads/js/prefixfree.js" type="text/javascript"></script>
-    <br></div>
-    
+    <br><br><a href="logout.php">Logout</a>
 </aside>
 
 
 <footer>
 Copyright
 </footer>
-    
+
 <!--Muestra caracteristicas sobre el grafico -->
 <script src="external/jquery/jquery.js"></script>
 <script src="jquery-ui.js"></script>
@@ -328,8 +525,32 @@ $( "#progressbar" ).progressbar({
 });
 </script>
 
-<!--Scrip para enviar mails de recordatorio -->
+<!--Codigo para el slider input -->
+<script>
+function myFunction() {
+    var x = document.getElementById("myRange").value;
+    document.getElementById("demo").innerHTML = x;
+}
+var rangeSlider = function(){
+  var slider = $('.range-slider'),
+      range = $('.range-slider__range'),
+      value = $('.range-slider__value');
+    
+  slider.each(function(){
 
+    value.each(function(){
+      var value = $(this).prev().attr('value');
+      $(this).html(value);
+    });
 
+    range.on('input', function(){
+      $(this).next(value).html(this.value);
+    });
+  });
+};
+
+rangeSlider();
+</script>
 </body>
 </html>
+
