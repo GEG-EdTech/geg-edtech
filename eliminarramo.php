@@ -4,13 +4,13 @@
     $ramo=$_POST['ramo'];
             $ramo = stripslashes($ramo);
             $ramo = mysql_real_escape_string($ramo);
-    $username = $_SESSION['username'];
-            $username = stripslashes($username);
-            $username = mysql_real_escape_string($username);
-    $query_id="SELECT id FROM users WHERE username='$username'";
-    $result_id = mysql_query($query_id);
+    $userName = $_SESSION['username'];
+            $userName = stripslashes($userName);
+            $userName = mysql_real_escape_string($userName);
+    $queryId="SELECT id FROM users WHERE username='$userName'";
+    $resultId = mysql_query($queryId);
 
-    while ($fila = mysql_fetch_assoc($result_id)) {
+    while ($fila = mysql_fetch_assoc($resultId)) {
         $id = $fila['id'];
     }
     if(!$link){
@@ -22,11 +22,13 @@
     $sql="DELETE FROM ramo WHERE nombre_ramo='$ramo' AND users_id='$id'"; 
 
     $result=mysqli_query($link, $sql);
-        if(!$result){
-            echo "Error <br>";
+    if(!$result){
+            echo "Error al eliminar el ramo <br>";
+            echo $ramo;
+            echo $id;
         }
 
-    echo "<script type='text/javascript'> window.location='http://localhost/ingsoftware/index.php'; </script>";
-    } 
+    else {echo "<script type='text/javascript'> window.location='http://localhost/ingsoftware/index.php'; </script>";
+    } }
 ?>
 
